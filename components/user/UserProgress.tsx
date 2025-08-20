@@ -14,15 +14,15 @@ export async function UserProgress({ hasActiveSubscription, plain }: UserProgres
   const userProgress = await getUserProgress()
 
   const { points = 0, hearts = 0, activeCourse } = userProgress ?? {}
-  const { title = 'Select course', altCode } = activeCourse ?? {}
+  const { title = 'Select course', imageSrc } = activeCourse ?? {}
 
   return (
     <div className="flex w-full items-center justify-between gap-x-2">
       <Button variant="ghost" className={plain ? 'dark:hover:bg-black/10' : 'group'} asChild>
         <NextLink href="/courses">
-          {altCode ? (
+          {imageSrc ? (
             <NextImage
-              src={`/img/flags/${altCode}.svg`}
+              src={imageSrc}
               alt={title}
               width={32}
               height={32}

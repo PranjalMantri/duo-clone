@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { revalidatePath, revalidateTag } from 'next/cache'
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 
 import { db } from '@/db/drizzle'
 import { userProgress } from '@/db/schema'
@@ -13,7 +13,9 @@ import { BaseError, GenericError, ServerError } from '@/lib/errors'
 
 export async function selectCourse(courseId: number) {
   try {
-    const [{ userId }, user] = await Promise.all([auth(), currentUser()])
+    const session = await auth()
+    const userId = session?.user?.id
+    const user = session?.user
 
     // can only select course if user is logged in
     if (!userId || !user) {
@@ -32,12 +34,12 @@ export async function selectCourse(courseId: number) {
     //     throw new ServerError('No lessons in this course!');
     // }
 
-    const currentUserProgress = await getUserProgress(userId)
+    const currentUserProgress = await getUserProgress()
     // data for selected course
     const selection = {
       activeCourseId: courseId,
-      userName: user.firstName || 'User',
-      userImgSrc: user.imageUrl || '/logo.svg',
+      userName: user.name || 'User',
+      userImgSrc: user.image || '/logo.svg',
     }
     // update or insert selected course in user progress
     if (currentUserProgress) {

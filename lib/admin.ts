@@ -1,9 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 
 const adminIds = ['user_31XWwxSy0YxerVu4VZv9Fh41NIs']
 
-export const isAdmin = () => {
-  const { userId } = auth()
+export const isAdmin = async () => {
+  const session = await auth()
+  const userId = session?.user?.id
 
   if (!userId) {
     return false

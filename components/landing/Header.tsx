@@ -1,5 +1,7 @@
+"use client"
+
 import NextLink from 'next/link'
-import { ClerkLoaded, UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme/toggle'
 
@@ -7,6 +9,7 @@ import LogoSVG from '@/public/logo.svg'
 import GithubSVG from '@/public/img/github.svg'
 
 export function Header() {
+  const { status } = useSession()
   return (
     <header className="relative flex justify-center">
       <div className="z-1 flex w-full items-center justify-between gap-2 px-2 sm:px-8">
@@ -32,16 +35,13 @@ export function Header() {
           <span className="font-display -tracking-widest max-sm:sr-only">Lingo</span>
         </NextLink>
         <div className="flex flex-1 items-center justify-end">
-          <ClerkLoaded>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button variant="ghost">Login</Button>
-              </SignInButton>
-            </SignedOut>
-          </ClerkLoaded>
+          {status === 'authenticated' ? (
+            <Button variant="ghost" onClick={() => signOut({ callbackUrl: '/' })}>
+              Logout
+            </Button>
+          ) : (
+            <Button variant="ghost" onClick={() => signIn()}>Login</Button>
+          )}
         </div>
       </div>
       <div className="fixed bottom-4 right-4 z-50 sm:hidden">

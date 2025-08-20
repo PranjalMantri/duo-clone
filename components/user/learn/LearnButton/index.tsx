@@ -53,7 +53,6 @@ export function LearnButton({
           current={current}
           completed={completed}
           percentage={Number.isNaN(percentage) ? 0 : percentage}
-          // @ts-expect-error add lesson routes
           href={completed ? `/lesson/${id}` : '/lesson'}
           hrefText={completed ? 'Practice' : 'Start'}
           prompt={completed ? 'Level up your proficiency!' : label}

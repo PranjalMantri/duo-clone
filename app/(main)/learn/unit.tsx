@@ -1,6 +1,6 @@
 'use client'
 
-import { lessons, units } from '@/db/schema'
+import type { lessons, units } from '@/db/schema'
 
 import { UnitBanner } from './unit-banner'
 import { LessonButton } from './lesson-button'

@@ -1,7 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { courses } from '@/db/schema'
+import type { courses } from '@/db/schema'
 import { Button } from '@/components/ui/button'
 
 type Props = {

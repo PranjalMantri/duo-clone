@@ -15,7 +15,7 @@ type CoursesListCardProps = {
   activeId?: UserProgressType['activeCourseId']
 }
 export function CoursesListCard({ activeId, course }: CoursesListCardProps) {
-  const { id, title, altCode } = course
+  const { id, title, imageSrc } = course
   const labelId = `${title}-${id}`
   const isActive = id === activeId
 
@@ -49,7 +49,7 @@ export function CoursesListCard({ activeId, course }: CoursesListCardProps) {
       >
         <AspectRatio ratio={3 / 2}>
           <NextImage
-            src={`/img/flags/${altCode}.svg`}
+            src={imageSrc}
             alt={`${title} flag`}
             fill
             className="rounded-md border object-cover drop-shadow-md"

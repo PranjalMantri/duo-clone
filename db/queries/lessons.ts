@@ -4,10 +4,11 @@ import { cache } from 'react'
 
 import { db } from '@/db/drizzle'
 import { getCourseProgress } from '@/db/queries/units'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 
 export const getLesson = cache(async (id?: number) => {
-  const { userId } = await auth()
+  const session = await auth()
+  const userId = session?.user?.id
 
   const courseProgress = await getCourseProgress()
 

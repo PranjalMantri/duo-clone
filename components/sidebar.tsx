@@ -1,6 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
-import { ClerkLoading, ClerkLoaded, UserButton } from '@clerk/nextjs'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { Loader } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -32,13 +34,27 @@ export const Sidebar = ({ className }: Props) => {
         <SidebarItem label="shop" href="/shop" iconSrc="/shop.svg" />
       </div>
       <div className="p-4">
-        <ClerkLoading>
-          <Loader className="h-5 w-5 animate-spin text-muted-foreground" />
-        </ClerkLoading>
-        <ClerkLoaded>
-          <UserButton afterSignOutUrl="/" />
-        </ClerkLoaded>
+        <AuthControls />
       </div>
     </div>
+  )
+}
+
+function AuthControls() {
+  const { status } = useSession()
+  if (status === 'loading') {
+    return <Loader className="h-5 w-5 animate-spin text-muted-foreground" />
+  }
+  if (status === 'authenticated') {
+    return (
+      <button className="text-sm underline" onClick={() => signOut({ callbackUrl: '/' })}>
+        Sign out
+      </button>
+    )
+  }
+  return (
+    <button className="text-sm underline" onClick={() => signIn()}>
+      Sign in
+    </button>
   )
 }

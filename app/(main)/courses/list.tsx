@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { courses, userProgress } from '@/db/schema'
+import type { courses, userProgress } from '@/db/schema'
 import { upsertUserProgress } from '@/actions/userProgress'
 
 import { Card } from './card'

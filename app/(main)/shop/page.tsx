@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 import { Promo } from '@/components/promo'
 import { FeedWrapper } from '@/components/feed-wrapper'
 import { UserProgress } from '@/components/user-progress'

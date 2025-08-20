@@ -4,7 +4,7 @@ import { cache } from 'react'
 
 import { db } from '@/db/drizzle'
 import { getUserProgress } from '@/db/queries/userProgress'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 import { eq } from 'drizzle-orm'
 import { challengeProgress, units } from '../schema'
 
@@ -45,7 +45,8 @@ import { challengeProgress, units } from '../schema'
 // })
 
 export const getUnits = cache(async () => {
-  const { userId } = await auth()
+  const session = await auth()
+  const userId = session?.user?.id
   const userProgress = await getUserProgress()
 
   if (!userId || !userProgress?.activeCourseId) {

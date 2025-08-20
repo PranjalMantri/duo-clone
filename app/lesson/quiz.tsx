@@ -9,7 +9,7 @@ import { useAudio, useWindowSize, useMount } from 'react-use'
 
 // import { reduceHearts } from '@/actions/user-progress'
 // import { useHeartsModal } from '@/store/use-hearts-modal'
-import { challengeOptions, challenges } from '@/db/schema'
+import type { challengeOptions, challenges } from '@/db/schema'
 import { usePracticeModal } from '@/store/use-practice-modal'
 import { upsertChallengeProgress } from '@/actions/challengeProgress'
 

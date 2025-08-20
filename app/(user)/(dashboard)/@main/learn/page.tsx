@@ -1,6 +1,6 @@
 import NextLink from 'next/link'
 import { redirect } from 'next/navigation'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 import { MoveLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Unit } from '@/components/user/learn/Unit'

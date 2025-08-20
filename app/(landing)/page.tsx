@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Hero } from '@/components/landing/Hero'
 import { Languages } from '@/components/landing/Languages'
 import { Metrics } from '@/components/landing/Metrics'

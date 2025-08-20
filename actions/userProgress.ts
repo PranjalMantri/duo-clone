@@ -3,7 +3,7 @@
 import { and, eq } from 'drizzle-orm'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 
 import { db } from '@/db/drizzle'
 import { getCourseById } from '@/db/queries/courses'
@@ -11,8 +11,9 @@ import { getUserProgress } from '@/db/queries/userProgress'
 import { challengeProgress, challenges, userProgress } from '@/db/schema'
 
 export const upsertUserProgress = async (courseId: number) => {
-  const { userId } = await auth()
-  const user = await currentUser()
+  const session = await auth()
+  const userId = session?.user?.id
+  const user = session?.user
 
   if (!userId || !user) {
     throw new Error('Unauthorized')
@@ -33,8 +34,8 @@ export const upsertUserProgress = async (courseId: number) => {
   if (existingUserProgress) {
     await db.update(userProgress).set({
       activeCourseId: courseId,
-      userName: user.firstName || 'User',
-      userImgSrc: user.imageUrl || '/mascot.svg',
+      userName: user?.name || 'User',
+      userImgSrc: user?.image || '/mascot.svg',
     })
 
     revalidatePath('/courses')
@@ -43,10 +44,10 @@ export const upsertUserProgress = async (courseId: number) => {
   }
 
   await db.insert(userProgress).values({
-    userId,
+    userId: userId!,
     activeCourseId: courseId,
-    userName: user.firstName || 'User',
-    userImgSrc: user.imageUrl || '/mascot.svg',
+    userName: user?.name || 'User',
+    userImgSrc: user?.image || '/mascot.svg',
   })
 
   revalidatePath('/courses')

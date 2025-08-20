@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { auth } from '@clerk/nextjs/server'
+import { auth } from '@/lib/auth'
 
 import { db } from '@/db/drizzle'
 import { cache } from 'react'
@@ -8,7 +8,8 @@ import { userProgress } from '../schema'
 import { eq } from 'drizzle-orm'
 
 export const getUserProgress = cache(async () => {
-  const { userId } = await auth()
+  const session = await auth()
+  const userId = session?.user?.id
 
   if (!userId) {
     return null
