@@ -9,11 +9,12 @@ type CoursesListProps = {
 export function CoursesList({ courses, activeId }: CoursesListProps) {
   return (
     <ul className="grid grid-cols-[repeat(auto-fit,minmax(min(210px,100%),1fr))] gap-4">
-      {courses.map((course) => (
-        <li key={course.id}>
-          <CoursesListCard course={course} activeId={activeId} />
-        </li>
-      ))}
+      {courses &&
+        courses.map((course) => (
+          <li key={course.id}>
+            <CoursesListCard course={course} activeId={activeId} />
+          </li>
+        ))}
     </ul>
   )
 }

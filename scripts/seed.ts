@@ -1,53 +1,54 @@
+import 'dotenv/config'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 
-import * as schema from '@/db/schema'
+import * as schema from '../db/schema'
 
 const sql = neon(process.env.DATABASE_URL!)
-
-const db = drizzle(sql, { schema, logger: true })
+// @ts-ignore
+const db = drizzle(sql, { schema })
 
 const main = async () => {
   try {
-    console.log('🚧 [DB]: Seeding database...')
+    console.log('Seeding database')
 
     await db.delete(schema.courses)
     await db.delete(schema.userProgress)
     await db.delete(schema.units)
+    await db.delete(schema.lessons)
     await db.delete(schema.challenges)
     await db.delete(schema.challengeOptions)
     await db.delete(schema.challengeProgress)
-    await db.delete(schema.lessons)
 
     await db.insert(schema.courses).values([
       {
         id: 1,
         title: 'Spanish',
-        altCode: 'es',
+        imageSrc: '/es.svg',
       },
       {
         id: 2,
         title: 'Italian',
-        altCode: 'it',
+        imageSrc: '/it.svg',
       },
       {
         id: 3,
         title: 'French',
-        altCode: 'fr',
+        imageSrc: '/fr.svg',
       },
       {
         id: 4,
-        title: 'German',
-        altCode: 'de',
+        title: 'Croatian',
+        imageSrc: '/hr.svg',
       },
     ])
 
     await db.insert(schema.units).values([
       {
         id: 1,
-        title: 'Unit 1',
-        description: 'Basics of Spanish.',
         courseId: 1, // Spanish
+        title: 'Unit 1',
+        description: 'Learn the basics of Spanish',
         order: 1,
       },
     ])
@@ -55,52 +56,33 @@ const main = async () => {
     await db.insert(schema.lessons).values([
       {
         id: 1,
-        unitId: 1, // Spanish
+        unitId: 1, // Unit 1 (Learn the basics...)
         order: 1,
         title: 'Nouns',
       },
       {
         id: 2,
-        unitId: 1,
+        unitId: 1, // Unit 1 (Learn the basics...)
         order: 2,
-        title: 'Pronouns',
+        title: 'Verbs',
       },
       {
         id: 3,
-        unitId: 1, // Spanish
+        unitId: 1, // Unit 1 (Learn the basics...)
         order: 3,
         title: 'Verbs',
       },
       {
         id: 4,
-        unitId: 1,
+        unitId: 1, // Unit 1 (Learn the basics...)
         order: 4,
-        title: 'Adjectives',
-      },
-      {
-        id: 5,
-        unitId: 1,
-        order: 5,
-        title: 'Grammar',
-      },
-
-      {
-        id: 6,
-        unitId: 1, // Spanish
-        order: 6,
         title: 'Verbs',
       },
       {
-        id: 7,
-        unitId: 1,
-        order: 7,
-        title: 'Adjectives',
-      },
-      {
-        id: 8,
-        unitId: 1,
-        order: 8,
-        title: 'Grammar',
+        id: 5,
+        unitId: 1, // Unit 1 (Learn the basics...)
+        order: 5,
+        title: 'Verbs',
       },
     ])
 
@@ -110,41 +92,120 @@ const main = async () => {
         lessonId: 1, // Nouns
         type: 'SELECT',
         order: 1,
-        question: 'Which one of these is "the man"?',
+        question: 'Which one of these is the "the man"?',
+      },
+      {
+        id: 2,
+        lessonId: 1, // Nouns
+        type: 'ASSIST',
+        order: 2,
+        question: '"the man"',
+      },
+      {
+        id: 3,
+        lessonId: 1, // Nouns
+        type: 'SELECT',
+        order: 3,
+        question: 'Which one of these is the "the robot"?',
       },
     ])
 
     await db.insert(schema.challengeOptions).values([
       {
-        id: 1,
-        challengeId: 1,
-        option: 'el hombre',
-        correct: true,
+        challengeId: 1, // Which one of these is "the man"?
         imageSrc: '/man.svg',
+        correct: true,
+        text: 'el hombre',
         audioSrc: '/es_man.mp3',
       },
       {
-        id: 2,
         challengeId: 1,
-        option: 'la mujer',
-        correct: false,
         imageSrc: '/woman.svg',
+        correct: false,
+        text: 'la mujer',
         audioSrc: '/es_woman.mp3',
       },
       {
-        id: 3,
         challengeId: 1,
-        option: 'el robot',
-        correct: false,
         imageSrc: '/robot.svg',
+        correct: false,
+        text: 'el robot',
         audioSrc: '/es_robot.mp3',
       },
     ])
 
-    console.log('✅ [DB]: Seeded 100%!')
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: 2, // "the man"?
+        correct: true,
+        text: 'el hombre',
+        audioSrc: '/es_man.mp3',
+      },
+      {
+        challengeId: 2,
+        correct: false,
+        text: 'la mujer',
+        audioSrc: '/es_woman.mp3',
+      },
+      {
+        challengeId: 2,
+        correct: false,
+        text: 'el robot',
+        audioSrc: '/es_robot.mp3',
+      },
+    ])
+
+    await db.insert(schema.challengeOptions).values([
+      {
+        challengeId: 3, // Which one of these is the "the robot"?
+        imageSrc: '/man.svg',
+        correct: false,
+        text: 'el hombre',
+        audioSrc: '/es_man.mp3',
+      },
+      {
+        challengeId: 3,
+        imageSrc: '/woman.svg',
+        correct: false,
+        text: 'la mujer',
+        audioSrc: '/es_woman.mp3',
+      },
+      {
+        challengeId: 3,
+        imageSrc: '/robot.svg',
+        correct: true,
+        text: 'el robot',
+        audioSrc: '/es_robot.mp3',
+      },
+    ])
+
+    await db.insert(schema.challenges).values([
+      {
+        id: 4,
+        lessonId: 2, // Verbs
+        type: 'SELECT',
+        order: 1,
+        question: 'Which one of these is the "the man"?',
+      },
+      {
+        id: 5,
+        lessonId: 2, // Verbs
+        type: 'ASSIST',
+        order: 2,
+        question: '"the man"',
+      },
+      {
+        id: 6,
+        lessonId: 2, // Verbs
+        type: 'SELECT',
+        order: 3,
+        question: 'Which one of these is the "the robot"?',
+      },
+    ])
+    console.log('Seeding finished')
   } catch (error) {
     console.error(error)
-    throw new Error('❌ [DB]: Failed to seed database.')
+    throw new Error('Failed to seed the database')
   }
 }
 

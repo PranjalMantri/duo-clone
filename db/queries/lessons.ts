@@ -4,9 +4,12 @@ import { cache } from 'react'
 
 import { db } from '@/db/drizzle'
 import { getCourseProgress } from '@/db/queries/units'
+import { auth } from '@clerk/nextjs/server'
 
-export const getLesson = cache(async (userId: string | null, id?: number) => {
-  const courseProgress = await getCourseProgress(userId)
+export const getLesson = cache(async (id?: number) => {
+  const { userId } = await auth()
+
+  const courseProgress = await getCourseProgress()
 
   const lessonId = id || courseProgress?.activeLessonId
 
@@ -40,16 +43,21 @@ export const getLesson = cache(async (userId: string | null, id?: number) => {
   }
 })
 
-export const getLessonPercentage = cache(async (userId: string | null) => {
-  const { activeLessonId } = (await getCourseProgress(userId)) ?? {}
+export const getLessonPercentage = cache(async () => {
+  const courseProgress = await getCourseProgress()
 
-  if (!activeLessonId || !userId) return 0
+  if (!courseProgress?.activeLessonId) {
+    return 0
+  }
 
-  const lesson = await getLesson(userId, activeLessonId)
+  const lesson = await getLesson(courseProgress.activeLessonId)
 
-  if (!lesson) return 0
+  if (!lesson) {
+    return 0
+  }
 
-  const completedChallenges = lesson.challenges.filter(({ completed }) => completed)
+  const completedChallenges = lesson.challenges.filter((challenge) => challenge.completed)
+  const percentage = Math.round((completedChallenges.length / lesson.challenges.length) * 100)
 
-  return Math.round((completedChallenges.length / lesson.challenges.length) * 100)
+  return percentage
 })

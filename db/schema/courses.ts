@@ -7,7 +7,7 @@ import { units } from '@/db/schema/units'
 export const courses = pgTable('courses', {
   id: serial('id').primaryKey(),
   title: text('title').notNull(),
-  altCode: varchar('alt_code', { length: 2 }).notNull(),
+  imageSrc: text('image_src').notNull(),
 })
 
 export const coursesRelations = relations(courses, ({ many }) => ({

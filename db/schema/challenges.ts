@@ -4,7 +4,7 @@ import { relations } from 'drizzle-orm'
 import { lessons } from '@/db/schema/lessons'
 import { challengeProgress } from '@/db/schema/challengeProgress'
 
-export const challengesEnum = pgEnum('type', ['SELECT', 'HINT'])
+export const challengesEnum = pgEnum('type', ['SELECT', 'ASSIST'])
 
 export const challenges = pgTable('challenges', {
   id: serial('id').primaryKey(),
@@ -21,7 +21,7 @@ export const challengeOptions = pgTable('challenge_options', {
   challengeId: integer('challenge_id')
     .references(() => challenges.id, { onDelete: 'cascade' })
     .notNull(),
-  option: text('option').notNull(),
+  text: text('option').notNull(),
   correct: boolean('correct').notNull(),
   imageSrc: text('image_src'),
   audioSrc: text('audio_src'),

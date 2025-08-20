@@ -4,20 +4,19 @@ const isAdminRoute = createRouteMatcher(['/admin(.*)'])
 const isPublicRoute = createRouteMatcher(['/', '/buttons'])
 
 export default clerkMiddleware(
-  (auth, req) => {
-    // strategy to protect all routes except public routes
-    if (isPublicRoute(req)) return // if it's a public route, do nothing
+  async (auth, req) => {
+    if (isPublicRoute(req)) return
 
-    // Restrict admin route to users with specific role
-    if (isAdminRoute(req)) auth().protect({ role: 'org:admin' })
+    if (isAdminRoute(req)) {
+      auth().protect({ role: 'org:admin' })
+      return
+    }
 
-    auth().protect() // for any other route, require auth
+    auth().protect()
   },
   { debug: process.env.NODE_ENV !== 'production' }
 )
 
 export const config = {
-  // The following matcher runs middleware on all routes
-  // except static assets.
   matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 }

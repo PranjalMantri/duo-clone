@@ -12,15 +12,16 @@ import { getLessonPercentage } from '@/db/queries/lessons'
 export default async function Learn() {
   const { userId } = await auth()
 
-  const userProgressPromise = getUserProgress(userId)
-  const courseProgressPromise = getCourseProgress(userId)
-  const unitsPromise = getUnits(userId)
-  const lessonPercentagePromise = getLessonPercentage(userId)
+  const userProgressPromise = getUserProgress()
+  const courseProgressPromise = getCourseProgress()
+  const unitsPromise = getUnits()
+  const lessonPercentagePromise = getLessonPercentage()
 
   const [userProgress, courseProgress] = await Promise.all([
     userProgressPromise,
     courseProgressPromise,
   ])
+
   const { activeCourse } = userProgress ?? {}
   const { activeLessonId } = courseProgress ?? {}
 
